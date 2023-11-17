@@ -1,3 +1,3 @@
-# speechcam_detection
+# speedcam_detection
 
-Detect speech of vihecles
+Detect speed of vihecles
