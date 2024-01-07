@@ -3,12 +3,13 @@ import numpy as np
 from object_detection import ObjectDetection
 import math
 
-# Initialize Object Detection
+# Khởi tạo Object Detection sử dụng yolov8
 od = ObjectDetection()
 
-cap = cv2.VideoCapture("./los_angeles.mp4")
+# Nhập video đầu vào
+cap = cv2.VideoCapture("../data/traffic_1.mp4")
 
-# Initialize count
+# Khởi tạo biến
 count = 0
 center_points_prev_frame = []
 
@@ -21,10 +22,10 @@ while True:
     if not ret:
         break
 
-    # Point current frame
+    # Mảng lưu trữ tâm của đối tượng trong frame
     center_points_cur_frame = []
 
-    # Detect objects on frame
+    # Detect đối tượng trong frame
     result = od.detect(frame)
     class_ids = np.array(result[0].boxes.cls, dtype=int)
     scores = np.array(result[0].boxes.conf, dtype=float)
@@ -36,11 +37,11 @@ while True:
         w, h = x2 - x1, y2 - y1
 
         cx, cy  = x1 + w//2, y1 + h//2
-        center_points_cur_frame.append((cx, cy))
+        center_points_cur_frame.append((cx, cy)) # Tâm của object trong frame hiện tại
 
         cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-    # Only at the beginning we compare previous and current frame
+    # Mới bắt đầu, so sánh 2 khung hình đầu tiên
     if count <= 2:
         for pt in center_points_cur_frame:
             for pt2 in center_points_prev_frame:
@@ -59,7 +60,7 @@ while True:
             for pt in center_points_cur_frame_copy:
                 distance = math.hypot(pt2[0] - pt[0], pt2[1] - pt[1])
 
-                # Update IDs position
+                # Update vị trí mới cho object 
                 if distance < 20:
                     tracking_objects[object_id] = pt
                     object_exists = True
@@ -67,11 +68,11 @@ while True:
                         center_points_cur_frame.remove(pt)
                     continue
 
-            # Remove IDs lost
+            # Bỏ bớt các ID
             if not object_exists:
                 tracking_objects.pop(object_id)
 
-        # Add new IDs found
+        # Thêm ID mới
         for pt in center_points_cur_frame:
             tracking_objects[track_id] = pt
             track_id += 1
@@ -80,17 +81,16 @@ while True:
         cv2.circle(frame, pt, 5, (0, 0, 255), -1)
         cv2.putText(frame, str(object_id), (pt[0], pt[1] - 7), 0, 1, (0, 0, 255), 2)
 
-    print("Tracking objects")
-    print(tracking_objects)
+    # print("Tracking objects")
+    # print(tracking_objects)
 
 
-    print("CUR FRAME LEFT PTS")
-    print(center_points_cur_frame)
-
+    # print("CUR FRAME LEFT PTS")
+    # print(center_points_cur_frame)
 
     cv2.imshow("Frame", frame)
 
-    # Make a copy of the points
+    # Gán tâm ở frame trước = tâm ở frame hiện tại
     center_points_prev_frame = center_points_cur_frame.copy()
 
     key = cv2.waitKey(1)
