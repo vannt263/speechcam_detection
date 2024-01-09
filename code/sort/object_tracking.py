@@ -16,8 +16,9 @@ tracker = Sort(max_age=20, min_hits=3, iou_threshold=0.3)
 vehicles_entering = {}
 vehicles_elapsed_time = {}
 
-cap = cv2.VideoCapture("../../data/cars.mp4")  # For Video
-area = [(400, 300), (690, 300), (710, 425), (150, 425)]
+cap = cv2.VideoCapture("../../data/test3.mp4")  # For Video
+line2 = [(550, 300), (750, 300)]
+line1 = [(300, 425), (920, 425)]
 
 while True:
     ret, frame = cap.read()
@@ -37,51 +38,50 @@ while True:
         cls = np.array(boxes.cls[0], dtype=int)
         currentClass = class_names[cls]
 
-        if currentClass == "car" or currentClass == "truck" or currentClass == "bus" \
-                    or currentClass == "motorbike" and conf > 0.3:
+        if currentClass in ["car", "truck", "bus"] and conf > 0.3:
                 currentArray = np.array([x1, y1, x2, y2, conf])
                 detections = np.vstack((detections, currentArray))
     resultsTracker = tracker.update(detections)
 
     # Ước lượng vận tốc
-    
-
     for result in resultsTracker:
         x1, y1, x2, y2, id = result
         x1, y1, x2, y2, id = int(x1), int(y1), int(x2), int(y2), int(id)
         w, h = x2 - x1, y2 - y1
 
         cx, cy  = x1 + w//2, y1 + h//2
+        if cy >= line2[0][1] - 15 and cy <= line2[0][1] + 15:
+             vehicles_entering[id] = time.time()
+        # result = cv2.pointPolygonTest(np.array(area, np.int32), (cx, cy), False)
 
-        result = cv2.pointPolygonTest(np.array(area, np.int32), (cx, cy), False)
-
-        if result >= 0:
-            vehicles_entering[id] = time.time()
+        # if result >= 0:
+        #     vehicles_entering[id] = time.time()
 
         if id in vehicles_entering:
+            if cy >= line1[1][1]:
             # result = cv2.pointPolygonTest(np.array(area, np.int32), (cx, cy), False)
             # if result < 0:
-            #     elapsed_time = time.time() - vehicles_entering[id]
-            #     if id not in vehicles_elapsed_time:
-            #         vehicles_elapsed_time[id] = elapsed_time
+                elapsed_time = time.time() - vehicles_entering[id]
+                print("E.T: ", elapsed_time)
+                if id not in vehicles_elapsed_time:
+                    vehicles_elapsed_time[id] = elapsed_time
 
-            #     if id in vehicles_elapsed_time:
-            #         elapsed_time = vehicles_elapsed_time[id] + 10**(-5)
-            #     # Calc average speed
-            #     distance = 5
-            #     a_speed_ms = distance/elapsed_time
-            #     a_speed_kh = a_speed_ms* 3.6
+                if id in vehicles_elapsed_time:
+                    elapsed_time = vehicles_elapsed_time[id] + 10**(-5)
+                # Calc average speed
+                distance = 20
+                a_speed_ms = distance/elapsed_time
+                a_speed_kh = a_speed_ms* 3.6
 
-            #     vehicles_elapsed_time[id] = elapsed_time
-                # cv2.rectangle(frame, (x1, y1), (x2, y2), (245, 170, 66), 2)
-                # cv2.rectangle(frame, (x1, y1), (x1+100, y1-20), (245, 170, 66), -1)
-                # cv2.putText(frame, str(round(a_speed_kh, 2)) + "km/h", (x1, y1-5), 0, 0.5, (255, 255, 255), 2)
-                # cv2.circle(frame, (cx, cy), 5, (245, 170, 66), -1)
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (245, 170, 66), 2)
-            cv2.rectangle(frame, (x1, y1), (x1+100, y1-20), (245, 170, 66), -1)
-            cv2.putText(frame, str(id), (x1, y1-5), 0, 0.5, (255, 255, 255), 2)
-            cv2.circle(frame, (cx, cy), 5, (245, 170, 66), -1)
-    cv2.polylines(frame, [np.array(area, np.int32)], True, (15, 220, 10), 6)
+                vehicles_elapsed_time[id] = elapsed_time
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (245, 170, 66), 2)
+                cv2.rectangle(frame, (x1, y1), (x1+100, y1-20), (245, 170, 66), -1)
+                cv2.putText(frame, str(round(a_speed_kh, 2)) + "km/h", (x1, y1-5), 0, 0.5, (255, 255, 255), 2)
+                cv2.circle(frame, (cx, cy), 5, (245, 170, 66), -1)
+
+    cv2.line(frame, line1[0], line1[1], (15, 220, 10), 2)
+    cv2.line(frame, line2[0], line2[1], (15, 220, 10), 2)
+    # cv2.polylines(frame, [np.array(area, np.int32)], True, (15, 220, 10), 6)
 
     # Đếm xe
     # cv2.line(frame, (limits[0], limits[1]), (limits[2], limits[3]), (0, 0, 255), 5)
