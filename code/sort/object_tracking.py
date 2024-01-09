@@ -1,24 +1,28 @@
 import numpy as np
 from ultralytics import YOLO
 import cv2
-import time
-import cvzone
-import math
 from object_detection import ObjectDetection
 from sort import *
 
+# Khai báo phát hiện đối tượng
 od = ObjectDetection()
 class_names = od.load_class_names()
 
-# Tracking
+# Khởi tạo tracker dùng thuật toán Sort
 tracker = Sort(max_age=20, min_hits=3, iou_threshold=0.3)
-# Tracking vehicles roundabout
-vehicles_entering = {}
-vehicles_elapsed_time = {}
 
-cap = cv2.VideoCapture("../../data/test3.mp4")  # For Video
-line2 = [(550, 300), (750, 300)]
-line1 = [(300, 425), (920, 425)]
+
+# Tạo từ điển
+vehicles_entering = {} # Lưu trữ đối tượng
+vehicles_elapsed_time = {} # Lưu trữ thời gian của đối tượng
+
+# Đọc video
+cap = cv2.VideoCapture("../../data/videoTest.mp4")
+fps = cap.get(cv2.CAP_PROP_FPS) # Số lượng frame trong 1s
+
+# Tạo đường line
+line1 = [(200, 350), (1100, 350)]
+line2 = [(400, 200), (850, 200)]
 
 while True:
     ret, frame = cap.read()
@@ -50,26 +54,35 @@ while True:
         w, h = x2 - x1, y2 - y1
 
         cx, cy  = x1 + w//2, y1 + h//2
-        if cy >= line2[0][1] - 15 and cy <= line2[0][1] + 15:
-             vehicles_entering[id] = time.time()
+
+        if cy >= line2[0][1] - 1 and cy <= line2[0][1] + 1:
+            # print("add id", id, " ", cy)
+            # if cy >= line2[0][1] and cx >= line2[0][0] and cx <= line2[1][0]:
+                vehicles_entering[id] = 0
+
+        # if cy >= line2[0][1] - 1 and cy <= line2[0][1] + 1:
+        #      vehicles_entering[id] = time.time()
+        #      print("start", id, ":", vehicles_entering[id])
         # result = cv2.pointPolygonTest(np.array(area, np.int32), (cx, cy), False)
 
         # if result >= 0:
         #     vehicles_entering[id] = time.time()
 
         if id in vehicles_entering:
-            if cy >= line1[1][1]:
-            # result = cv2.pointPolygonTest(np.array(area, np.int32), (cx, cy), False)
-            # if result < 0:
-                elapsed_time = time.time() - vehicles_entering[id]
-                print("E.T: ", elapsed_time)
-                if id not in vehicles_elapsed_time:
-                    vehicles_elapsed_time[id] = elapsed_time
+            if cy < line1[1][1]:
+                vehicles_entering[id] = vehicles_entering[id] + 1
+            else:
+                print("id", id, "end frame", vehicles_entering[id])
+                print(id, ":", vehicles_entering[id])
+                elapsed_time = vehicles_entering[id]*1/fps
+                # elapsed_time = time.time() - vehicles_entering[id]
+                # if id not in vehicles_elapsed_time:
+                #     vehicles_elapsed_time[id] = elapsed_time
 
-                if id in vehicles_elapsed_time:
-                    elapsed_time = vehicles_elapsed_time[id] + 10**(-5)
+                # if id in vehicles_elapsed_time:
+                #     elapsed_time = vehicles_elapsed_time[id]
                 # Calc average speed
-                distance = 20
+                distance = 35
                 a_speed_ms = distance/elapsed_time
                 a_speed_kh = a_speed_ms* 3.6
 
@@ -78,6 +91,7 @@ while True:
                 cv2.rectangle(frame, (x1, y1), (x1+100, y1-20), (245, 170, 66), -1)
                 cv2.putText(frame, str(round(a_speed_kh, 2)) + "km/h", (x1, y1-5), 0, 0.5, (255, 255, 255), 2)
                 cv2.circle(frame, (cx, cy), 5, (245, 170, 66), -1)
+                del vehicles_entering[id]
 
     cv2.line(frame, line1[0], line1[1], (15, 220, 10), 2)
     cv2.line(frame, line2[0], line2[1], (15, 220, 10), 2)

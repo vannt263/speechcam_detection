@@ -2,3 +2,5 @@ ultralytics
 cvzone
 scikit-image
 filterpy
+numpy
+
