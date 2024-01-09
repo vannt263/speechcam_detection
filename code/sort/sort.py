@@ -15,7 +15,6 @@ from filterpy.kalman import KalmanFilter
 
 np.random.seed(0)
 
-
 def linear_assignment(cost_matrix):
   try:
     import lap

@@ -3,4 +3,4 @@ cvzone
 scikit-image
 filterpy
 numpy
-
+opencv-python
