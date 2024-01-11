@@ -11,13 +11,12 @@ class_names = od.load_class_names()
 # Khởi tạo tracker dùng thuật toán Sort
 tracker = Sort(max_age=20, min_hits=3, iou_threshold=0.3)
 
-
 # Tạo từ điển
 vehicles_entering = {} # Lưu trữ đối tượng
 vehicles_elapsed_time = {} # Lưu trữ thời gian của đối tượng
 
 # Đọc video
-cap = cv2.VideoCapture("../../data/videoTest.mp4")
+cap = cv2.VideoCapture("../../data/video/videoTest.mp4")
 fps = cap.get(cv2.CAP_PROP_FPS) # Số lượng frame trong 1s
 
 # Tạo đường line
@@ -56,11 +55,13 @@ while True:
         cx, cy  = x1 + w//2, y1 + h//2
 
         if id not in vehicles_entering and id not in vehicles_elapsed_time:
-            if cy >= line2[0][1]:
+            if cy >= line2[0][1] and cx <= 850:
+                print("add id", id)
                 vehicles_entering[id] = 0
 
         if id in vehicles_entering:
             if cy < line1[1][1]:
+                print("add frame", id)
                 vehicles_entering[id] = vehicles_entering[id] + 1
             else:
                 # print(id, ":", vehicles_entering[id])
@@ -83,7 +84,7 @@ while True:
     cv2.line(frame, line2[0], line2[1], (15, 220, 10), 2)
 
     cv2.imshow("Image", frame)
-    key = cv2.waitKey(1)
+    key = cv2.waitKey(0)
     if key == 27:
         break
 
