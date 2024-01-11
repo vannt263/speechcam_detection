@@ -5,9 +5,16 @@ import math
 
 # Khởi tạo Object Detection sử dụng yolov8
 od = ObjectDetection()
-
+class_names = od.load_class_names()
 # Nhập video đầu vào
-cap = cv2.VideoCapture("../../data/traffic_1.mp4")
+cap = cv2.VideoCapture("../../data/video/cars.mp4")
+
+# Xác định thuộc tính của video đầu vào
+width = int(cap.get(3))
+height = int(cap.get(4))
+fps = cap.get(5)
+fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # hoặc thử *'X264'
+out = cv2.VideoWriter('../../output/tracking/base_cars.mp4', fourcc, fps, (width, height))
 
 # Khởi tạo biến
 count = 0
@@ -30,6 +37,7 @@ while True:
     class_ids = np.array(result[0].boxes.cls, dtype=int)
     scores = np.array(result[0].boxes.conf, dtype=float)
     boxes = np.array(result[0].boxes.xyxy, dtype=int)
+    currentClass = class_names[class_ids[0]]
 
     for box in boxes:
         (x1, y1, x2, y2) = box
@@ -47,7 +55,7 @@ while True:
             for pt2 in center_points_prev_frame:
                 distance = math.hypot(pt2[0] - pt[0], pt2[1] - pt[1])
 
-                if distance < 20:
+                if distance < 10:
                     tracking_objects[track_id] = pt
                     track_id += 1
     else:
@@ -80,7 +88,9 @@ while True:
     for object_id, pt in tracking_objects.items():
         cv2.circle(frame, pt, 5, (0, 0, 255), -1)
         cv2.putText(frame, str(object_id), (pt[0], pt[1] - 7), 0, 1, (0, 0, 255), 2)
+        cv2.putText(frame, currentClass, (pt[0], pt[1] + 20), 0, 1, (0, 0, 255), 2)
 
+    out.write(frame)
     cv2.imshow("Frame", frame)
 
     center_points_prev_frame = center_points_cur_frame.copy()
@@ -90,4 +100,5 @@ while True:
         break
 
 cap.release()
+out.release()
 cv2.destroyAllWindows()
