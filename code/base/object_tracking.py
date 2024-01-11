@@ -7,14 +7,14 @@ import math
 od = ObjectDetection()
 class_names = od.load_class_names()
 # Nhập video đầu vào
-cap = cv2.VideoCapture("../../data/video/cars.mp4")
+cap = cv2.VideoCapture("../../data/video/traffic.mp4")
 
 # Xác định thuộc tính của video đầu vào
 width = int(cap.get(3))
 height = int(cap.get(4))
 fps = cap.get(5)
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # hoặc thử *'X264'
-out = cv2.VideoWriter('../../output/tracking/base_cars.mp4', fourcc, fps, (width, height))
+out = cv2.VideoWriter('../../output/tracking/base_traffic.mp4', fourcc, fps, (width, height))
 
 # Khởi tạo biến
 count = 0
@@ -88,7 +88,7 @@ while True:
     for object_id, pt in tracking_objects.items():
         cv2.circle(frame, pt, 5, (0, 0, 255), -1)
         cv2.putText(frame, str(object_id), (pt[0], pt[1] - 7), 0, 1, (0, 0, 255), 2)
-        cv2.putText(frame, currentClass, (pt[0], pt[1] + 20), 0, 1, (0, 0, 255), 2)
+        # cv2.putText(frame, currentClass, (pt[0], pt[1] + 20), 0, 1, (0, 0, 255), 2)
 
     out.write(frame)
     cv2.imshow("Frame", frame)
