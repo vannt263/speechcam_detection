@@ -16,18 +16,18 @@ vehicles_entering = {} # Lưu trữ đối tượng
 vehicles_speed = {} # Lưu trữ thời gian của đối tượng
 
 # Đọc video
-cap = cv2.VideoCapture("../../data/video/los_angeles.mp4")
+cap = cv2.VideoCapture("../../data/video/test3.mp4")
 fps = cap.get(cv2.CAP_PROP_FPS) # Số lượng frame trong 1s
 width = int(cap.get(3))
 height = int(cap.get(4))
 fps = cap.get(5)
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # hoặc thử *'X264'
-out = cv2.VideoWriter('../../output/speed/sort_los_angeles.mp4', fourcc, fps, (width, height))
+out = cv2.VideoWriter('../../output/speed/sort_test3.mp4', fourcc, fps, (width, height))
 
 # Tạo đường line
-distance = 12
-line1 = [(450, 500), (1050, 500)]
-line2 = [(450, 550), (1100, 550)]
+distance = 24
+line1 = [(420, 350), (610, 350)]
+line2 = [(250, 450), (600, 450)]
 
 while True:
     ret, frame = cap.read()
@@ -61,7 +61,7 @@ while True:
         cx, cy  = x1 + w//2, y1 + h//2
         cv2.putText(frame, str(id), (cx, cy), 0, 0.5, (255, 255, 255), 2)
         if id not in vehicles_entering and id not in vehicles_speed:
-            if cy >= line1[0][1] and cy <= line1[0][1] + 5 and cx <= line2[1][0]:
+            if cy >= line1[0][1] and cy <= line1[0][1] + 10 and cx <= line2[1][0]:
                 print("add id", id)
                 vehicles_entering[id] = 0
 
