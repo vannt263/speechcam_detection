@@ -25,7 +25,7 @@ fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # hoặc thử *'X264'
 out = cv2.VideoWriter('../../output/speed/sort_los_angeles.mp4', fourcc, fps, (width, height))
 
 # Tạo đường line
-distance = 14
+distance = 12
 line1 = [(450, 500), (1050, 500)]
 line2 = [(450, 550), (1100, 550)]
 
@@ -61,7 +61,7 @@ while True:
         cx, cy  = x1 + w//2, y1 + h//2
         cv2.putText(frame, str(id), (cx, cy), 0, 0.5, (255, 255, 255), 2)
         if id not in vehicles_entering and id not in vehicles_speed:
-            if cy >= line1[0][1] and cy <= line1[0][1] + 15 and cx <= line2[1][0]:
+            if cy >= line1[0][1] and cy <= line1[0][1] + 5 and cx <= line2[1][0]:
                 print("add id", id)
                 vehicles_entering[id] = 0
 
@@ -78,11 +78,11 @@ while True:
                 vehicles_speed[id] = a_speed_kh
                 del vehicles_entering[id]
 
-    if id in vehicles_speed:
-        cv2.rectangle(frame, (x1, y1), (x2, y2), (245, 170, 66), 2)
-        cv2.rectangle(frame, (x1, y1), (x1+100, y1-20), (245, 170, 66), -1)
-        cv2.putText(frame, str(round(vehicles_speed[id], 2)) + "km/h", (x1, y1-5), 0, 0.5, (255, 255, 255), 2)
-        cv2.circle(frame, (cx, cy), 5, (245, 170, 66), -1)
+        if id in vehicles_speed:
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (245, 170, 66), 2)
+            cv2.rectangle(frame, (x1, y1), (x1+100, y1-20), (245, 170, 66), -1)
+            cv2.putText(frame, str(round(vehicles_speed[id], 2)) + "km/h", (x1, y1-5), 0, 0.5, (255, 255, 255), 2)
+            cv2.circle(frame, (cx, cy), 5, (245, 170, 66), -1)
 
     cv2.line(frame, line1[0], line1[1], (15, 220, 10), 2)
     cv2.line(frame, line2[0], line2[1], (15, 220, 10), 2)
