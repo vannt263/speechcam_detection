@@ -16,7 +16,7 @@ vehicles_entering = {} # Lưu trữ đối tượng
 vehicles_speed = {} # Lưu trữ thời gian của đối tượng
 
 # Đọc video
-cap = cv2.VideoCapture("../../../data/video/traffic.mp4")
+cap = cv2.VideoCapture("../../data/video/traffic.mp4")
 fps = cap.get(cv2.CAP_PROP_FPS) # Số lượng frame trong 1s
 
 # Tạo video đầu ra
