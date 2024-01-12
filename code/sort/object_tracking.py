@@ -78,11 +78,11 @@ while True:
                 vehicles_elapsed_time[id] = elapsed_time
                 del vehicles_entering[id]
 
-        if id in vehicles_elapsed_time:
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (245, 170, 66), 2)
-            cv2.rectangle(frame, (x1, y1), (x1+100, y1-20), (245, 170, 66), -1)
-            cv2.putText(frame, str(round(a_speed_kh, 2)) + "km/h", (x1, y1-5), 0, 0.5, (255, 255, 255), 2)
-            cv2.circle(frame, (cx, cy), 5, (245, 170, 66), -1)
+    # if id in vehicles_elapsed_time:
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (245, 170, 66), 2)
+                cv2.rectangle(frame, (x1, y1), (x1+100, y1-20), (245, 170, 66), -1)
+                cv2.putText(frame, str(round(a_speed_kh, 2)) + "km/h", (x1, y1-5), 0, 0.5, (255, 255, 255), 2)
+                cv2.circle(frame, (cx, cy), 5, (245, 170, 66), -1)
 
     cv2.line(frame, line1[0], line1[1], (15, 220, 10), 2)
     cv2.line(frame, line2[0], line2[1], (15, 220, 10), 2)
@@ -94,5 +94,5 @@ while True:
         break
 
 cap.release()
-# out.release()
+out.release()
 cv2.destroyAllWindows()
