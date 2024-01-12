@@ -16,18 +16,18 @@ vehicles_entering = {} # Lưu trữ đối tượng
 vehicles_speed = {} # Lưu trữ thời gian của đối tượng
 
 # Đọc video
-cap = cv2.VideoCapture("../../data/video/test3.mp4")
+cap = cv2.VideoCapture("../../data/video/traffic.mp4")
 fps = cap.get(cv2.CAP_PROP_FPS) # Số lượng frame trong 1s
 width = int(cap.get(3))
 height = int(cap.get(4))
 fps = cap.get(5)
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # hoặc thử *'X264'
-out = cv2.VideoWriter('../../output/speed/sort_test3.mp4', fourcc, fps, (width, height))
+out = cv2.VideoWriter('../../output/speed/speed_traffic.mp4', fourcc, fps, (width, height))
 
 # Tạo đường line
-distance = 24
-line1 = [(420, 350), (610, 350)]
-line2 = [(250, 450), (600, 450)]
+distance = 18
+line1 = [(500, 350), (1400, 350)]
+line2 = [(420, 450), (1500, 450)]
 
 while True:
     ret, frame = cap.read()
