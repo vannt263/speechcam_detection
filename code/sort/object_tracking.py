@@ -16,8 +16,13 @@ vehicles_entering = {} # Lưu trữ đối tượng
 vehicles_elapsed_time = {} # Lưu trữ thời gian của đối tượng
 
 # Đọc video
-cap = cv2.VideoCapture("../../data/video/videoTest.mp4")
+cap = cv2.VideoCapture("../../data/video/traffic.mp4")
 fps = cap.get(cv2.CAP_PROP_FPS) # Số lượng frame trong 1s
+width = int(cap.get(3))
+height = int(cap.get(4))
+fps = cap.get(5)
+fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # hoặc thử *'X264'
+out = cv2.VideoWriter('../../output/tracking/sort_traffic.mp4', fourcc, fps, (width, height))
 
 # Tạo đường line
 line1 = [(200, 350), (1100, 350)]
@@ -53,40 +58,52 @@ while True:
         w, h = x2 - x1, y2 - y1
 
         cx, cy  = x1 + w//2, y1 + h//2
-
-        if id not in vehicles_entering and id not in vehicles_elapsed_time:
-            if cy >= line2[0][1] and cx <= 850:
-                print("add id", id)
-                vehicles_entering[id] = 0
-
-        if id in vehicles_entering:
-            if cy < line1[1][1]:
-                print("add frame", id)
-                vehicles_entering[id] = vehicles_entering[id] + 1
-            else:
-                # print(id, ":", vehicles_entering[id])
-                elapsed_time = vehicles_entering[id]*1/fps
-
-                distance = 35
-                a_speed_ms = distance/elapsed_time
-                a_speed_kh = a_speed_ms* 3.6
-
-                vehicles_elapsed_time[id] = elapsed_time
-                # del vehicles_entering[id]
-
-    if id in vehicles_elapsed_time:
         cv2.rectangle(frame, (x1, y1), (x2, y2), (245, 170, 66), 2)
         cv2.rectangle(frame, (x1, y1), (x1+100, y1-20), (245, 170, 66), -1)
-        cv2.putText(frame, str(round(a_speed_kh, 2)) + "km/h", (x1, y1-5), 0, 0.5, (255, 255, 255), 2)
+        cv2.putText(frame, str(id), (x1, y1-5), 0, 0.5, (255, 255, 255), 2)
         cv2.circle(frame, (cx, cy), 5, (245, 170, 66), -1)
+         
 
-    cv2.line(frame, line1[0], line1[1], (15, 220, 10), 2)
-    cv2.line(frame, line2[0], line2[1], (15, 220, 10), 2)
+    #     x1, y1, x2, y2, id = result
+    #     x1, y1, x2, y2, id = int(x1), int(y1), int(x2), int(y2), int(id)
+    #     w, h = x2 - x1, y2 - y1
 
+    #     cx, cy  = x1 + w//2, y1 + h//2
+
+    #     if id not in vehicles_entering and id not in vehicles_elapsed_time:
+    #         if cy >= line2[0][1] and cx <= 850:
+    #             print("add id", id)
+    #             vehicles_entering[id] = 0
+
+    #     if id in vehicles_entering:
+    #         if cy < line1[1][1]:
+    #             print("add frame", id)
+    #             vehicles_entering[id] = vehicles_entering[id] + 1
+    #         else:
+    #             # print(id, ":", vehicles_entering[id])
+    #             elapsed_time = vehicles_entering[id]*1/fps
+
+    #             distance = 35
+    #             a_speed_ms = distance/elapsed_time
+    #             a_speed_kh = a_speed_ms* 3.6
+
+    #             vehicles_elapsed_time[id] = elapsed_time
+                # del vehicles_entering[id]
+
+    # if id in vehicles_elapsed_time:
+    #     cv2.rectangle(frame, (x1, y1), (x2, y2), (245, 170, 66), 2)
+    #     cv2.rectangle(frame, (x1, y1), (x1+100, y1-20), (245, 170, 66), -1)
+        # cv2.putText(frame, str(round(a_speed_kh, 2)) + "km/h", (x1, y1-5), 0, 0.5, (255, 255, 255), 2)
+        # cv2.circle(frame, (cx, cy), 5, (245, 170, 66), -1)
+
+    # cv2.line(frame, line1[0], line1[1], (15, 220, 10), 2)
+    # cv2.line(frame, line2[0], line2[1], (15, 220, 10), 2)
+    out.write(frame)
     cv2.imshow("Image", frame)
-    key = cv2.waitKey(0)
+    key = cv2.waitKey(1)
     if key == 27:
         break
 
 cap.release()
+out.release()
 cv2.destroyAllWindows()
