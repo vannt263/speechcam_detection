@@ -16,13 +16,13 @@ vehicles_entering = {} # Lưu trữ đối tượng
 vehicles_elapsed_time = {} # Lưu trữ thời gian của đối tượng
 
 # Đọc video
-cap = cv2.VideoCapture("../../data/video/highway.mp4")
+cap = cv2.VideoCapture("../../data/video/test3.mp4")
 fps = cap.get(cv2.CAP_PROP_FPS) # Số lượng frame trong 1s
 width = int(cap.get(3))
 height = int(cap.get(4))
 fps = cap.get(5)
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # hoặc thử *'X264'
-out = cv2.VideoWriter('../../output/speed/sort_highway.mp4', fourcc, fps, (width, height))
+out = cv2.VideoWriter('../../output/speed/sort_test3.mp4', fourcc, fps, (width, height))
 
 # Tạo đường line
 distance = 24
