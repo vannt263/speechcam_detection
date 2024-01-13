@@ -30,3 +30,4 @@
 Đọc ảnh  + sử dụng thuật toán bilateral ( giảm nhiễu ), Candy (phát hiện cạnh), findContours(tìm đường viền), tìm vị trí biển số + easyocr phát hiện ký tự
 
 - C2 dùng mô hình pretrain phát hiện vị trí biển số + easyocr để phát hiện ký tự
+
