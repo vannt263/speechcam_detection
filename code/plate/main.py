@@ -50,11 +50,11 @@ while ret:
                 license_plate_crop = frame[int(y1):int(y2), int(x1): int(x2), :]
 
                 # xử lý đầu vào
-                license_plate_crop_gray = cv2.cvtColor(license_plate_crop, cv2.COLOR_BGR2GRAY)
-                _, license_plate_crop_thresh = cv2.threshold(license_plate_crop_gray, 200, 255, cv2.THRESH_BINARY_INV)
+                # license_plate_crop_gray = cv2.cvtColor(license_plate_crop, cv2.COLOR_BGR2GRAY)
+                # _, license_plate_crop_thresh = cv2.threshold(license_plate_crop_gray, 120, 255, cv2.THRESH_BINARY_INV)
 
                 # đọc ký tự
-                license_plate_text, license_plate_text_score = read_plate(license_plate_crop_thresh)
+                license_plate_text, license_plate_text_score = read_plate(license_plate_crop)
 
                 if license_plate_text is not None:
                     results[frame_nmr][car_id] = {'car': {'bbox': [xcar1, ycar1, xcar2, ycar2]},
@@ -64,4 +64,4 @@ while ret:
                                                                     'text_score': license_plate_text_score}}
 
 # write results
-write_csv(results, './test1.csv')
+write_csv(results, './test2.csv')
