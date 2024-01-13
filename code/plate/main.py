@@ -11,10 +11,10 @@ results = {}
 mot_tracker = Sort()
 
 # load models
-coco_model = YOLO("../model/yolov8n.pt")
+coco_model = YOLO("../model/yolov8/yolov8n.pt")
 license_plate_detector = YOLO('D:/study/CV/CK/speechcam_detection/code/plate/license_plate_detector.pt')
 
-cap = cv2.VideoCapture('D:/study/CV/CK/speechcam_detection/data/video/sample.mp4')
+cap = cv2.VideoCapture('D:/study/CV/CK/speechcam_detection/data/video/plate1.mp4')
 
 vehicles = [2, 3, 5, 7]
 
@@ -51,7 +51,7 @@ while ret:
 
                 # xử lý đầu vào
                 license_plate_crop_gray = cv2.cvtColor(license_plate_crop, cv2.COLOR_BGR2GRAY)
-                _, license_plate_crop_thresh = cv2.threshold(license_plate_crop_gray, 64, 255, cv2.THRESH_BINARY_INV)
+                _, license_plate_crop_thresh = cv2.threshold(license_plate_crop_gray, 90, 255, cv2.THRESH_BINARY_INV)
 
                 # đọc ký tự
                 license_plate_text, license_plate_text_score = read_plate(license_plate_crop_thresh)
@@ -64,4 +64,4 @@ while ret:
                                                                     'text_score': license_plate_text_score}}
 
 # write results
-write_csv(results, './test.csv')
+write_csv(results, './test1.csv')

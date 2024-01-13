@@ -76,7 +76,7 @@ def interpolate_bounding_boxes(data):
     return interpolated_data
 
 # Đọc file CSV
-with open('test.csv', 'r') as file:
+with open('test1.csv', 'r') as file:
     reader = csv.DictReader(file)
     data = list(reader)
 
@@ -85,7 +85,7 @@ interpolated_data = interpolate_bounding_boxes(data)
 
 # Ghi dữ liệu đã cập nhật vào một file CSV mới
 header = ['frame_nmr', 'car_id', 'car_bbox', 'license_plate_bbox', 'license_plate_bbox_score', 'license_number', 'license_number_score']
-with open('test_interpolated.csv', 'w', newline='') as file:
+with open('test_interpolated1.csv', 'w', newline='') as file:
     writer = csv.DictWriter(file, fieldnames=header)
     writer.writeheader()
     writer.writerows(interpolated_data)
