@@ -16,20 +16,20 @@ vehicles_entering = {} # Lưu trữ đối tượng
 vehicles_speed = {} # Lưu trữ thời gian của đối tượng
 
 # Đọc video
-cap = cv2.VideoCapture("../../data/video/traffic.mp4")
+cap = cv2.VideoCapture("../../data/video/plate.mp4")
 fps = cap.get(cv2.CAP_PROP_FPS) # Số lượng frame trong 1s
 
 # Tạo video đầu ra
-# width = int(cap.get(3))
-# height = int(cap.get(4))
-# fps = cap.get(5)
-# fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # hoặc thử *'X264'
-# out = cv2.VideoWriter('../../output/speed/speed_traffic.mp4', fourcc, fps, (width, height))
+width = int(cap.get(3))
+height = int(cap.get(4))
+fps = cap.get(5)
+fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # hoặc thử *'X264'
+out = cv2.VideoWriter('../../output/speedcam_plate.mp4', fourcc, fps, (width, height))
 
 # Tạo đường line
-distance = 18
-line1 = [(500, 350), (1400, 350)]
-line2 = [(420, 450), (1500, 450)]
+distance = 5
+line1 = [(446, 700), (1450, 700)]
+line2 = [(446, 500), (1400, 500)]
 
 while True:
     ret, frame = cap.read()
@@ -63,12 +63,12 @@ while True:
         cx, cy  = x1 + w//2, y1 + h//2
         cv2.putText(frame, str(id), (cx, cy), 0, 0.5, (255, 255, 255), 2)
         if id not in vehicles_entering and id not in vehicles_speed:
-            if cy >= line1[0][1] and cy <= line1[0][1] + 10 and cx <= line2[1][0]:
+            if cy <=  line1[0][1] + 7 and cy >= line1[0][1] - 7 and cx <= line2[1][0] and cy > line2[0][1]:
                 print("add id", id)
                 vehicles_entering[id] = 0
 
         if id in vehicles_entering:
-            if cy <= line2[1][1]:
+            if cy >= line2[1][1]:
                 print("add frame", id)
                 vehicles_entering[id] = vehicles_entering[id] + 1
             else:
@@ -88,7 +88,7 @@ while True:
 
     cv2.line(frame, line1[0], line1[1], (15, 220, 10), 2)
     cv2.line(frame, line2[0], line2[1], (15, 220, 10), 2)
-    # out.write(frame)
+    out.write(frame)
 
     cv2.imshow("Image", frame)
     key = cv2.waitKey(1)
@@ -96,5 +96,5 @@ while True:
         break
 
 cap.release()
-# out.release()
+out.release()
 cv2.destroyAllWindows()
