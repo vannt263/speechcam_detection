@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from datetime import datetime
 
 import easyocr
 from ultralytics import YOLO
@@ -12,7 +13,9 @@ from object_detection import ObjectDetection
 od = ObjectDetection()
 class_names = od.load_class_names()
 
+# Khởi tạo Ocr
 reader = easyocr.Reader(["en"])
+
 # Khởi tạo tracker dùng thuật toán Sort
 tracker = Sort(max_age=20, min_hits=3, iou_threshold=0.3)
 
@@ -73,19 +76,21 @@ while True:
         # cv2.putText(frame, str(id), (cx, cy), 0, 0.5, (255, 255, 255), 2)
         if id not in vehicles_entering and id not in vehicles_speed:
             if cy <=  line1[0][1] + 7 and cy >= line1[0][1] - 7 and cx <= line2[1][0] and cy > line2[0][1]:
-                print("add id", id)
                 vehicles_entering[id] = 0
 
         if id in vehicles_entering:
             if cy >= line2[1][1]:
-                print("add frame", id)
                 vehicles_entering[id] = vehicles_entering[id] + 1
             else:
-                # print(id, ":", vehicles_entering[id])
+                # Tính toán vận tốc
                 elapsed_time = vehicles_entering[id]*1/fps
                 a_speed_ms = distance/elapsed_time
                 a_speed_kh = a_speed_ms* 3.6
+
+                # Khoanh vùng các xe vi phạm vận tốc
                 if a_speed_kh >= 25:
+                    # Lấy thời gian hiện tại
+                    current_time = datetime.now()
                     image_car = frame[y1:y2, x1:x2, :]
                     # cv2.imshow("image car", image_car)
                     # cv2.imwrite(f"../../output/speed_cam/{id}.png", image_car)
@@ -96,11 +101,13 @@ while True:
                     if crop_plate.shape[0] > 0 and crop_plate.shape[1] > 0:
                         res_plate = reader.readtext(crop_plate)
                         res = res_plate[0][1].upper().replace(' ', '')
+
+                        # Kiểm tra định dạng biển số xe
                         if license_format(res):
                             plate = format_license(res)
-                            vehicles_speed[id] = a_speed_kh, plate
+                            vehicles_speed[id] = a_speed_kh, plate, current_time.strftime("%Y-%m-%d_%H:%M:%S")
                         else:
-                            vehicles_speed[id] = a_speed_kh, res
+                            vehicles_speed[id] = a_speed_kh, res, current_time.strftime("%Y-%m-%d_%H:%M:%S")
                     else:
                         vehicles_speed[id] = a_speed_kh, "None"
                 del vehicles_entering[id]
