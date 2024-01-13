@@ -3,6 +3,7 @@ from ultralytics import YOLO
 import cv2
 from object_detection import ObjectDetection
 from sort import *
+import json
 
 # Khai báo phát hiện đối tượng
 od = ObjectDetection()
@@ -24,7 +25,10 @@ width = int(cap.get(3))
 height = int(cap.get(4))
 fps = cap.get(5)
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # hoặc thử *'X264'
-out = cv2.VideoWriter('../../output/speedcam_plate.mp4', fourcc, fps, (width, height))
+out = cv2.VideoWriter('../../output/speed_cam/speedcam_plate.mp4', fourcc, fps, (width, height))
+
+# Đường dẫn đến file txt
+output_file_path = "../../output/speed_cam/result.txt"
 
 # Tạo đường line
 distance = 5
@@ -61,7 +65,7 @@ while True:
         w, h = x2 - x1, y2 - y1
 
         cx, cy  = x1 + w//2, y1 + h//2
-        cv2.putText(frame, str(id), (cx, cy), 0, 0.5, (255, 255, 255), 2)
+        # cv2.putText(frame, str(id), (cx, cy), 0, 0.5, (255, 255, 255), 2)
         if id not in vehicles_entering and id not in vehicles_speed:
             if cy <=  line1[0][1] + 7 and cy >= line1[0][1] - 7 and cx <= line2[1][0] and cy > line2[0][1]:
                 print("add id", id)
@@ -76,8 +80,11 @@ while True:
                 elapsed_time = vehicles_entering[id]*1/fps
                 a_speed_ms = distance/elapsed_time
                 a_speed_kh = a_speed_ms* 3.6
+                if a_speed_kh >= 25:
+                    image_car = frame[y1:y2, x1:x2, :]
+                    cv2.imshow("image car", image_car)
+                    vehicles_speed[id] = a_speed_kh
 
-                vehicles_speed[id] = a_speed_kh
                 del vehicles_entering[id]
 
         if id in vehicles_speed:
@@ -94,6 +101,9 @@ while True:
     key = cv2.waitKey(1)
     if key == 27:
         break
+
+with open(output_file_path, 'w') as file:
+    file.writelines(f"{key}: {value}\n" for key, value in vehicles_speed.items())
 
 cap.release()
 out.release()
