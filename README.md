@@ -15,6 +15,8 @@
 
 - Như báo cáo đính kèm, hạn chế của cách làm này là cần xác định trước 1 đoạn đường có sẵn và tọa độ của 2 đường line, nhóm đã đính sẵn một tệp information.txt trong thư mục ./code/speed mô tả khoảng cách và tọa độ của đường line của một số video nhóm thử nghiệm. Khoảng cách được nhóm ước lượng qua quan sát số lượng và độ dài của đường nét đứt chia làn.
 
+- Trong trường hợp các bạn muốn kẻ đường line khác, có thể vào file settup.ipynb chạy 3 ô đầu tiên, click chuột chọn tọa độ, và các bạn có thể chỉnh sửa tọa độ theo kết quả được in ra.
+
 - Để thực nghiệm, các bạn có thể chạy file estimate_speed.py
 
 # Tác vụ Trích xuất thông tin ô tô (biển số xe):
