@@ -76,7 +76,7 @@ def interpolate_bounding_boxes(data):
     return interpolated_data
 
 # Đọc file CSV
-with open('test1.csv', 'r') as file:
+with open('test2.csv', 'r') as file:
     reader = csv.DictReader(file)
     data = list(reader)
 
