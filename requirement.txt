@@ -4,3 +4,5 @@ scikit-image
 filterpy
 numpy
 opencv-python
+easyocr
+imutils
