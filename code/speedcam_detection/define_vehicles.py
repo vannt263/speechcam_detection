@@ -3,12 +3,13 @@ from ultralytics import YOLO
 import cv2
 from object_detection import ObjectDetection
 from sort import *
-import json
+import easyocr
 
 # Khai báo phát hiện đối tượng
 od = ObjectDetection()
 class_names = od.load_class_names()
 
+reader = easyocr.Reader(["en"])
 # Khởi tạo tracker dùng thuật toán Sort
 tracker = Sort(max_age=20, min_hits=3, iou_threshold=0.3)
 
@@ -18,6 +19,7 @@ vehicles_speed = {} # Lưu trữ thời gian của đối tượng
 
 # Đọc video
 cap = cv2.VideoCapture("../../data/video/plate.mp4")
+license_plate_detector = YOLO('../model/yolov8/license_plate_detector.pt')
 fps = cap.get(cv2.CAP_PROP_FPS) # Số lượng frame trong 1s
 
 # Tạo video đầu ra
@@ -83,14 +85,20 @@ while True:
                 if a_speed_kh >= 25:
                     image_car = frame[y1:y2, x1:x2, :]
                     cv2.imshow("image car", image_car)
-                    vehicles_speed[id] = a_speed_kh
-
+                    cv2.imwrite(f"../../output/speed_cam/{id}.png", image_car)
+                    plx1, plx2 , ply1, ply2, _,_ = license_plate_detector(image_car)[0].boxes.data.tolist()[0]
+                    crop_plate = image_car[int(ply1):int(ply2), int(plx1):int(plx2),:]
+                    if crop_plate.shape[0] > 0 and crop_plate.shape[1] > 0:
+                        res_plate = reader.readtext(crop_plate)
+                        vehicles_speed[id] = a_speed_kh, res_plate[0][1]
+                    else:
+                        vehicles_speed[id] = a_speed_kh, "None"
                 del vehicles_entering[id]
 
         if id in vehicles_speed:
             cv2.rectangle(frame, (x1, y1), (x2, y2), (245, 170, 66), 2)
             cv2.rectangle(frame, (x1, y1), (x1+100, y1-20), (245, 170, 66), -1)
-            cv2.putText(frame, str(round(vehicles_speed[id], 2)) + "km/h", (x1, y1-5), 0, 0.5, (255, 255, 255), 2)
+            cv2.putText(frame, str(round(vehicles_speed[id][0], 2)) + "km/h", (x1, y1-5), 0, 0.5, (255, 255, 255), 2)
             cv2.circle(frame, (cx, cy), 5, (245, 170, 66), -1)
 
     cv2.line(frame, line1[0], line1[1], (15, 220, 10), 2)
