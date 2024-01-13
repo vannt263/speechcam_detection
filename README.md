@@ -18,3 +18,13 @@
 - Để thực nghiệm, các bạn có thể chạy file estimate_speed.py
 
 # Tác vụ Trích xuất thông tin ô tô (biển số xe):
+Đối với video: 
+- thì áp dụng kết quả detection, tracking từ YOLO và SORT để theo dõi đối tượng 
+- Kết hợp thêm model pretrain biển số xe trong file license_plate_detector.pt để phát hiện biển số xe -> đưa ra vị trí biện số xe
+- nhận diện ký tự bằng easyocr với điều kiện mặc định đối với video đang xét là gồm 6 ký tự ( điều kiện ở file util.py)
+
+Đối với ảnh trích xuất từ video:
+- C1 dùng các thuật toán xử lý ảnh:
+Đọc ảnh  + sử dụng thuật toán bilateral ( giảm nhiễu ), Candy (phát hiện cạnh), findContours(tìm đường viền), tìm vị trí biển số + easyocr phát hiện ký tự
+
+- C2 dùng mô hình pretrain phát hiện vị trí biển số + easyocr để phát hiện ký tự
