@@ -51,7 +51,7 @@ while ret:
 
                 # xử lý đầu vào
                 license_plate_crop_gray = cv2.cvtColor(license_plate_crop, cv2.COLOR_BGR2GRAY)
-                _, license_plate_crop_thresh = cv2.threshold(license_plate_crop_gray, 190, 255, cv2.THRESH_BINARY_INV)
+                _, license_plate_crop_thresh = cv2.threshold(license_plate_crop_gray, 250, 255, cv2.THRESH_BINARY_INV)
 
                 # đọc ký tự
                 license_plate_text, license_plate_text_score = read_plate(license_plate_crop_thresh)
