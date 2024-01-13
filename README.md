@@ -26,7 +26,7 @@
 - nhận diện ký tự bằng easyocr với điều kiện mặc định đối với video đang xét là gồm 6 ký tự ( điều kiện ở file util.py)
 
 Đối với ảnh trích xuất từ video:
-- C1 dùng các thuật toán xử lý ảnh:
+- C1 dùng các thuật toán xử lý ảnh: trong file ocrplate
 Đọc ảnh  + sử dụng thuật toán bilateral ( giảm nhiễu ), Candy (phát hiện cạnh), findContours(tìm đường viền), tìm vị trí biển số + easyocr phát hiện ký tự
 
 - C2 dùng mô hình pretrain phát hiện vị trí biển số + easyocr để phát hiện ký tự
