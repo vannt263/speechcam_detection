@@ -93,7 +93,8 @@ while True:
                     current_time = datetime.now()
                     image_car = frame[y1:y2, x1:x2, :]
                     # cv2.imshow("image car", image_car)
-                    # cv2.imwrite(f"../../output/speed_cam/{id}.png", image_car)
+                    car_path = f"../../output/speed_cam/{id}.png"
+                    cv2.imwrite(car_path, image_car)
                     plx1, ply1 , plx2, ply2, _,_ = license_plate_detector(image_car)[0].boxes.data.tolist()[0]
                     # print(plx1, plx2, ply1, ply2)
                     crop_plate = image_car[int(ply1):int(ply2), int(plx1):int(plx2),:]
@@ -105,11 +106,11 @@ while True:
                         # Kiểm tra định dạng biển số xe
                         if license_format(res):
                             plate = format_license(res)
-                            vehicles_speed[id] = a_speed_kh, plate, current_time.strftime("%Y-%m-%d_%H:%M:%S")
+                            vehicles_speed[id] = a_speed_kh, plate, car_path, current_time.strftime("%Y-%m-%d_%H:%M:%S")
                         else:
-                            vehicles_speed[id] = a_speed_kh, res, current_time.strftime("%Y-%m-%d_%H:%M:%S")
+                            vehicles_speed[id] = a_speed_kh, res, car_path, current_time.strftime("%Y-%m-%d_%H:%M:%S")
                     else:
-                        vehicles_speed[id] = a_speed_kh, "None"
+                        vehicles_speed[id] = a_speed_kh, "None", car_path, current_time.strftime("%Y-%m-%d_%H:%M:%S")
                 del vehicles_entering[id]
 
         if id in vehicles_speed:
