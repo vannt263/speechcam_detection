@@ -27,7 +27,7 @@ def draw_border(img, top_left, bottom_right, color=(0, 255, 0), thickness=10, li
 results = pd.read_csv('D:/study/CV/CK/speechcam_detection/code/plate/test_interpolated1.csv')
 
 # load video
-video_path = 'D:/study/CV/CK/speechcam_detection/data/video/plate.mp4'
+video_path = 'D:/study/CV/CK/speechcam_detection/data/video/plate1.mp4'
 cap = cv2.VideoCapture(video_path)
 
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Specify the codec
@@ -82,25 +82,25 @@ while ret:
             H, W, _ = license_crop.shape
 
             try:
-                frame[int(car_y1) - H - 100:int(car_y1) - 100,
-                      int((car_x2 + car_x1 - W) / 2):int((car_x2 + car_x1 + W) / 2), :] = license_crop
+                # frame[int(car_y1) - H - 100:int(car_y1) - 100,
+                #       int((car_x2 + car_x1 - W) / 2):int((car_x2 + car_x1 + W) / 3), :] = license_crop
 
-                frame[int(car_y1) - H - 400:int(car_y1) - H - 100,
-                      int((car_x2 + car_x1 - W) / 2):int((car_x2 + car_x1 + W) / 2), :] = (255, 255, 255)
+                # frame[int(car_y1) - H - 400:int(car_y1) - H - 100,
+                #       int((car_x2 + car_x1 - W) / 2):int((car_x2 + car_x1 + W) / 3), :] = (255, 255, 255)
 
                 (text_width, text_height), _ = cv2.getTextSize(
                     license_plate[df_.iloc[row_indx]['car_id']]['license_plate_number'],
                     cv2.FONT_HERSHEY_SIMPLEX,
-                    4.3,
-                    17)
+                    2,
+                    7)
 
                 cv2.putText(frame,
                             license_plate[df_.iloc[row_indx]['car_id']]['license_plate_number'],
-                            (int((car_x2 + car_x1 - text_width) / 2), int(car_y1 - H - 250 + (text_height / 2))),
+                            (int((car_x2 + car_x1 - text_width) / 2), int(car_y1 - H + (text_height / 2))),
                             cv2.FONT_HERSHEY_SIMPLEX,
-                            4.3,
-                            (0, 0, 0),
-                            17)
+                            2,
+                            (0, 0, 255),
+                            7)
 
             except:
                 pass
