@@ -16,13 +16,13 @@ vehicles_entering = {} # Lưu trữ đối tượng
 vehicles_speed = {} # Lưu trữ thời gian của đối tượng
 
 # Đọc video
-cap = cv2.VideoCapture("../../../data/video/traffic.mp4")
-fps = cap.get(cv2.CAP_PROP_FPS) # Số lượng frame trong 1s
-width = int(cap.get(3))
-height = int(cap.get(4))
-fps = cap.get(5)
-fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # hoặc thử *'X264'
-out = cv2.VideoWriter('../../../output/tracking/sort_traffic.mp4', fourcc, fps, (width, height))
+cap = cv2.VideoCapture("../../../data/video/taymo1.mp4")
+# fps = cap.get(cv2.CAP_PROP_FPS) # Số lượng frame trong 1s
+# width = int(cap.get(3))
+# height = int(cap.get(4))
+# fps = cap.get(5)
+# fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # hoặc thử *'X264'
+# out = cv2.VideoWriter('../../../output/tracking/sort_traffic.mp4', fourcc, fps, (width, height))
 
 # Tạo đường line
 distance = 18
@@ -64,7 +64,7 @@ while True:
         cv2.putText(frame, str(id), (x1+10, y1-5), 0, 0.5, (255, 255, 255), 2)
         cv2.circle(frame, (cx, cy), 5, (245, 170, 66), -1)
     
-    out.write(frame)
+    # out.write(frame)
 
     cv2.imshow("Image", frame)
     key = cv2.waitKey(1)
@@ -72,5 +72,5 @@ while True:
         break
 
 cap.release()
-out.release()
+# out.release()
 cv2.destroyAllWindows()
