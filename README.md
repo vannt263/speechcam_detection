@@ -21,7 +21,7 @@
 
 # Tác vụ Trích xuất thông tin ô tô (biển số xe):
 Đối với video: 
-- thì áp dụng kết quả detection, tracking từ YOLO và SORT để theo dõi đối tượng 
+- Áp dụng kết quả detection, tracking từ YOLO và SORT để theo dõi đối tượng 
 - Kết hợp thêm model pretrain biển số xe trong file license_plate_detector.pt để phát hiện biển số xe -> đưa ra vị trí biện số xe
 - nhận diện ký tự bằng easyocr với điều kiện mặc định đối với video đang xét là gồm 6 ký tự ( điều kiện ở file util.py)
 
